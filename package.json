@@ -1,54 +1,60 @@
 {
-    "name": "MyHanaApp",
-    "version": "1.0.0",
-    "description": "A simple CAP project.",
-    "repository": "<Add your repository here>",
-    "license": "UNLICENSED",
-    "private": true,
-    "dependencies": {
-        "@sap/cds": "^5",
-        "express": "^4",
-        "@sap/hana-client": "^2.7"
+  "name": "MyHanaApp",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^5",
+    "express": "^4",
+    "@sap/hana-client": "^2.7"
+  },
+  "scripts": {
+    "start": "cds run"
+  },
+  "cds": {
+    "build": {
+      "target": "."
     },
-    "scripts": {
-        "start": "cds run"
+    "hana": {
+      "deploy-format": "hdbtable"
     },
-    "cds": {
-        "build": {
-            "target": "."
-        },
-        "hana": {
-            "deploy-format": "hdbtable"
-        },
-        "requires": {
-            "db": {
-                "kind": "hana"
-            }
-        }
-    },
-    "eslintConfig": {
-        "extends": "eslint:recommended",
-        "env": {
-            "es2020": true,
-            "node": true,
-            "jest": true,
-            "mocha": true
-        },
-        "globals": {
-            "SELECT": true,
-            "INSERT": true,
-            "UPDATE": true,
-            "DELETE": true,
-            "CREATE": true,
-            "DROP": true,
-            "CDL": true,
-            "CQL": true,
-            "CXL": true,
-            "cds": true
-        },
-        "rules": {
-            "no-console": "off",
-            "require-atomic-updates": "off"
-        }
+    "requires": {
+      "db": {
+        "kind": "hana"
+      }
     }
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "es2020": true,
+      "node": true,
+      "jest": true,
+      "mocha": true
+    },
+    "globals": {
+      "SELECT": true,
+      "INSERT": true,
+      "UPDATE": true,
+      "DELETE": true,
+      "CREATE": true,
+      "DROP": true,
+      "CDL": true,
+      "CQL": true,
+      "CXL": true,
+      "cds": true
+    },
+    "rules": {
+      "no-console": "off",
+      "require-atomic-updates": "off"
+    }
+  },
+  "sapux": [
+    "app/myhanaproject"
+  ],
+  "devDependencies": {
+    "@sap/ux-specification": "^1.90.1"
+  }
 }

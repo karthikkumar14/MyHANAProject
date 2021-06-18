@@ -1,58 +1,68 @@
-## Generated mta.yaml based on template version 0.4.0
-## appName = MyHanaApp
-## language=nodejs; multitenant=false
-## approuter=
-_schema-version: '3.1'
+_schema-version: "3.1"
 ID: MyHanaApp
+description: A simple CAP project.
 version: 1.0.0
-description: "A simple CAP project."
+modules:
+- name: MyHanaApp-srv
+  type: nodejs
+  path: srv
+  requires:
+  - name: MyHanaApp-db
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+- name: MyHanaApp-db-deployer
+  type: hdb
+  path: db
+  requires:
+  - name: MyHanaApp-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: MyHanaApp-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: MyHanaApp-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - myhanaproject.zip
+      name: myhanaproject
+      target-path: resources/
+- name: myhanaproject
+  type: html5
+  path: app/myhanaproject
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: MyHanaApp-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+  properties:
+    hdi-service-name: ${service-name}
+- name: MyHanaApp-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: MyHanaApp-html5-srv
+    service-plan: app-host
 parameters:
+  deploy_mode: html5-repo
   enable-parallel-deployments: true
-   
 build-parameters:
   before-all:
-   - builder: custom
-     commands:
-      - npm install --production
-      - npx -p @sap/cds-dk cds build --production
-
-modules:
- # --------------------- SERVER MODULE ------------------------
- - name: MyHanaApp-srv
- # ------------------------------------------------------------
-   type: nodejs
-   path: srv
-   requires:
-    # Resources extracted from CAP configuration
-    - name: MyHanaApp-db
-   provides:
-    - name: srv-api      # required by consumers of CAP services (e.g. approuter)
-      properties:
-        srv-url: ${default-url}
-
- # -------------------- SIDECAR MODULE ------------------------
- - name: MyHanaApp-db-deployer
- # ------------------------------------------------------------
-   type: hdb
-   path: db  
-   parameters:
-     buildpack: nodejs_buildpack
-   requires:
-    # 'hana' and 'xsuaa' resources extracted from CAP configuration
-    - name: MyHanaApp-db
-
-
-resources:
- # services extracted from CAP configuration
- # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
-# ------------------------------------------------------------
- - name: MyHanaApp-db
-# ------------------------------------------------------------
-   type: com.sap.xs.hdi-container
-   parameters:
-     service: hana  # or 'hanatrial' on trial landscapes
-     service-plan: hdi-shared
-   properties:
-     hdi-service-name: ${service-name}
-
-
+  - builder: custom
+    commands:
+    - npm install --production
+    - npx -p @sap/cds-dk cds build --production
